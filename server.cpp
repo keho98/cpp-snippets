@@ -22,14 +22,16 @@ int main(int argc, char *argv[])
      struct sockaddr_in serv_addr, cli_addr;
      int n;
      if (argc < 2) {
-         fprintf(stderr,"ERROR, no port provided\n");
-         exit(1);
+         fprintf(stderr,"No port provided, falling to default port 8888\n");
+	 portno = 8888;
      }
+     else{
+	 portno = atoi(argv[1]);
+     }	
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
      if (sockfd < 0) 
         error("ERROR opening socket");
      bzero((char *) &serv_addr, sizeof(serv_addr));
-     portno = atoi(argv[1]);
      serv_addr.sin_family = AF_INET;
      serv_addr.sin_addr.s_addr = INADDR_ANY;
      serv_addr.sin_port = htons(portno);
@@ -37,6 +39,7 @@ int main(int argc, char *argv[])
               sizeof(serv_addr)) < 0) 
               error("ERROR on binding");
      else printf("Connected to port %d \n", portno);
+     while(1){
      listen(sockfd,5);
      clilen = sizeof(cli_addr);
      newsockfd = accept(sockfd, 
@@ -51,6 +54,7 @@ int main(int argc, char *argv[])
      n = write(newsockfd,"I got your message",18);
      if (n < 0) error("ERROR writing to socket");
      close(newsockfd);
+     } 
      close(sockfd);
-     return 0; 
+     return 0;
 }
