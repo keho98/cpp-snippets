@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
      socklen_t clilen;
      char buffer[256];
      struct sockaddr_in serv_addr, cli_addr;
-     int n;
      if (argc < 2) {
          fprintf(stderr,"No port provided, falling to default port 8888\n");
 	 portno = 8888;
@@ -39,21 +38,21 @@ int main(int argc, char *argv[])
               sizeof(serv_addr)) < 0) 
               error("ERROR on binding");
      else printf("Connected to port %d \n", portno);
-     while(1){
      listen(sockfd,5);
-     clilen = sizeof(cli_addr);
-     newsockfd = accept(sockfd, 
-                 (struct sockaddr *) &cli_addr, 
-                 &clilen);
-     if (newsockfd < 0) 
-          error("ERROR on accept");
-     bzero(buffer,256);
-     n = read(newsockfd,buffer,255);
-     if (n < 0) error("ERROR reading from socket");
-     printf("Request received: %s\n",buffer);
-     n = write(newsockfd, buffer,18);
-     if (n < 0) error("ERROR writing to socket");
-     close(newsockfd);
+     while(1){
+         clilen = sizeof(cli_addr);
+         newsockfd = accept(sockfd, 
+                     (struct sockaddr *) &cli_addr, 
+                     &clilen);
+         if (newsockfd < 0) 
+              error("ERROR on accept");
+         bzero(buffer,256);
+         int n_read = read(newsockfd,buffer,255);
+         printf("Request received.");
+         int n_write = write(newsockfd, buffer,strlen(buffer));
+         if (n_write < 0) error("ERROR writing to socket");
+         n_read = read(newsockfd,buffer,255);
+         close(newsockfd);
      } 
      close(sockfd);
      return 0;
