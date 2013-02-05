@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
               error("ERROR on accept");
          bzero(buffer,256);
          int n_read = read(newsockfd,buffer,255);
-         printf("Request received.");
+         fprintf(stderr, "Request received.\n");
          int n_write = write(newsockfd, buffer,strlen(buffer));
          if (n_write < 0) error("ERROR writing to socket");
          n_read = read(newsockfd,buffer,255);
