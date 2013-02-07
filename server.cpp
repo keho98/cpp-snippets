@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
      struct sockaddr_in serv_addr, cli_addr;
      if (argc < 2) {
          fprintf(stderr,"No port provided, falling to default port 8888\n");
-	 portno = 8888;
+	     portno = 8888;
      }
      else{
 	 portno = atoi(argv[1]);
@@ -34,16 +34,14 @@ int main(int argc, char *argv[])
      serv_addr.sin_family = AF_INET;
      serv_addr.sin_addr.s_addr = INADDR_ANY;
      serv_addr.sin_port = htons(portno);
-     if (bind(sockfd, (struct sockaddr *) &serv_addr,
-              sizeof(serv_addr)) < 0) 
+     if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
               error("ERROR on binding");
-     else printf("Connected to port %d \n", portno);
+     else 
+              printf("Connected to port %d \n", portno);
      listen(sockfd,5);
+     clilen = sizeof(cli_addr);
      while(1){
-         clilen = sizeof(cli_addr);
-         newsockfd = accept(sockfd, 
-                     (struct sockaddr *) &cli_addr, 
-                     &clilen);
+        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
          if (newsockfd < 0) 
               error("ERROR on accept");
          bzero(buffer,256);
