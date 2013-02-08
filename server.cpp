@@ -16,7 +16,7 @@ void error(const char *msg)
 
 int main(int argc, char *argv[])
 {
-     int sockfd, newsockfd, portno;
+     int sockfd, newsockfd, portno, pid;
      socklen_t clilen;
      char buffer[256];
      struct sockaddr_in serv_addr, cli_addr;
@@ -41,16 +41,22 @@ int main(int argc, char *argv[])
      listen(sockfd,5);
      clilen = sizeof(cli_addr);
      while(1){
-        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+         newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
          if (newsockfd < 0) 
               error("ERROR on accept");
-         bzero(buffer,256);
-         int n_read = read(newsockfd,buffer,255);
-         fprintf(stderr, "Request received.\n");
-         int n_write = write(newsockfd, buffer,strlen(buffer));
-         if (n_write < 0) error("ERROR writing to socket");
-         n_read = read(newsockfd,buffer,255);
-         close(newsockfd);
+        pid = fork(); 
+	if(pid < 0)
+		error("ERROR on fork");
+	 if(pid == 0){
+	 	close(sockfd);
+		bzero(buffer,256);
+         	int n_read = read(newsockfd,buffer,255);
+         	fprintf(stderr, "Request received.\n");
+         	int n_write = write(newsockfd, buffer,strlen(buffer));
+         	exit(0);
+	 }
+	 else
+		close(newsockfd);		
      } 
      close(sockfd);
      return 0;
