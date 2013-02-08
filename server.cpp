@@ -17,6 +17,7 @@ void error(const char *msg)
 int main(int argc, char *argv[])
 {
      int sockfd, newsockfd, portno, pid;
+     signal(SIGCHLD, SIG_IGN);
      socklen_t clilen;
      char buffer[256];
      struct sockaddr_in serv_addr, cli_addr;
@@ -44,8 +45,8 @@ int main(int argc, char *argv[])
          newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
          if (newsockfd < 0) 
               error("ERROR on accept");
-        pid = fork(); 
-	if(pid < 0)
+         pid = fork(); 
+	 if(pid < 0)
 		error("ERROR on fork");
 	 if(pid == 0){
 	 	close(sockfd);
